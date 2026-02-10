@@ -44,12 +44,22 @@ jobs:
             build-essential libffi-dev libssl-dev \
             zlib1g-dev libjpeg-dev libsqlite3-dev \
             libncurses-dev libtinfo6 liblzma-dev libbz2-dev \
-            pkg-config libgl1-mesa-dev libgles2-mesa-dev
+            pkg-config libgl1-mesa-dev libgles2-mesa-dev \
+            cython3
 
       - name: Install Buildozer
         run: |
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "Cython<3" buildozer
+
+      - name: Verify toolchain
+        run: |
+          echo "Commit: $(git rev-parse HEAD)"
+          echo "buildozer.spec:"
+          sed -n '1,200p' buildozer.spec
+          python -m pip show Cython || true
+          which cython || true
+          cython --version || true
 
       - name: Build APK (debug)
         run: |
