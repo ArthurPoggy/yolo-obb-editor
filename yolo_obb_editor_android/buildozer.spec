@@ -1,3 +1,6 @@
+[buildozer]
+log_level = 2
+
 [app]
 title = YOLO OBB Editor
 package.name = yolo_obb_editor
