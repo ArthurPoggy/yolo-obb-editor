@@ -12,7 +12,7 @@ requirements = python3,kivy
 orientation = landscape
 fullscreen = 0
 
-android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,READ_MEDIA_IMAGES
+android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,READ_MEDIA_IMAGES,MANAGE_EXTERNAL_STORAGE
 android.accept_sdk_license = True
 android.api = 33
 android.minapi = 21

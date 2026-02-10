@@ -895,16 +895,65 @@ class OBBApp(App):
     def build(self):
         dataset_path = self._default_dataset_path()
         self.data = EditorData(dataset_path)
-        self.data.load_images()
-        if self.data.image_paths:
-            self.data.load()
+
+        if platform == "android":
+            from kivy.clock import Clock
+            Clock.schedule_once(lambda dt: self._request_android_permissions(), 0.5)
+        else:
+            self.data.load_images()
+            if self.data.image_paths:
+                self.data.load()
 
         root = MainView(self.data)
         return root
 
+    def on_resume(self):
+        if platform == "android" and not self.data.image_paths:
+            self._load_after_permissions()
+
     def on_stop(self):
         if hasattr(self, "data"):
             self.data.save_progress()
+
+    def _request_android_permissions(self):
+        try:
+            from android.permissions import request_permissions, Permission
+            request_permissions(
+                [Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE],
+                self._on_permissions_result,
+            )
+        except Exception:
+            self._load_after_permissions()
+
+    def _on_permissions_result(self, permissions, results):
+        from kivy.clock import Clock
+        Clock.schedule_once(lambda dt: self._check_manage_storage(), 0)
+
+    def _check_manage_storage(self):
+        try:
+            from jnius import autoclass
+            Environment = autoclass('android.os.Environment')
+            if Environment.isExternalStorageManager():
+                self._load_after_permissions()
+                return
+            from android import mActivity
+            Intent = autoclass('android.content.Intent')
+            Settings = autoclass('android.provider.Settings')
+            Uri = autoclass('android.net.Uri')
+            intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            uri = Uri.parse("package:" + mActivity.getPackageName())
+            intent.setData(uri)
+            mActivity.startActivity(intent)
+        except Exception:
+            self._load_after_permissions()
+
+    def _load_after_permissions(self):
+        self.data.load_images()
+        if self.data.image_paths:
+            self.data.load()
+        if self.root:
+            self.root.editor.reset_state()
+            self.root.refresh()
 
     def _load_saved_dataset(self):
         try:
