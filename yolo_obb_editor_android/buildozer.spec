@@ -1,4 +1,4 @@
-﻿[app]
+[app]
 title = YOLO OBB Editor
 package.name = yolo_obb_editor
 package.domain = org.ocrplacas
