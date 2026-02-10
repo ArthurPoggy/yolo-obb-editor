@@ -61,6 +61,15 @@ jobs:
           which cython || true
           cython --version || true
 
+      - name: Reset Android SDK cache if incomplete
+        run: |
+          SDK="$HOME/.buildozer/android/platform/android-sdk"
+          NDK="$HOME/.buildozer/android/platform/android-ndk"
+          if [ -d "$SDK" ] && [ ! -d "$SDK/build-tools" ]; then
+            echo "SDK build-tools missing; removing cached SDK/NDK to force re-download."
+            rm -rf "$SDK" "$NDK"
+          fi
+
       - name: Build APK (debug)
         run: |
           buildozer -v android debug
