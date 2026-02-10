@@ -23,6 +23,19 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Cache Buildozer/Android
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.buildozer
+            ~/.local/share/python-for-android
+            ~/.gradle
+            ~/.android
+            ~/.cache/pip
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('yolo_obb_editor_android/buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
+
       - name: Install system deps
         run: |
           sudo apt-get update
