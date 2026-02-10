@@ -1,0 +1,21 @@
+﻿# Data / models
+.dataset/
+dataset_FINAL13k/
+chassi_extra_flatten_30-01-26/
+train_chassi_obb-28.01/
+*.pt
+
+# Build artifacts
+yolo_obb_editor_android/.buildozer/
+yolo_obb_editor_android/bin/
+*.apk
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Tooling
+.claude/
+.DS_Store
+Thumbs.db

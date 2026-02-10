@@ -1,0 +1,49 @@
+﻿name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - yolo_obb_editor_android/**
+      - .github/workflows/android-build.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: yolo_obb_editor_android
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk \
+            build-essential libffi-dev libssl-dev \
+            zlib1g-dev libjpeg-dev libsqlite3-dev \
+            libncurses5-dev libtinfo5 liblzma-dev libbz2-dev \
+            pkg-config libgl1-mesa-dev libgles2-mesa-dev
+
+      - name: Install Buildozer
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install buildozer
+
+      - name: Build APK (debug)
+        run: |
+          buildozer -v android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: yolo-obb-editor-apk
+          path: yolo_obb_editor_android/bin/*.apk
