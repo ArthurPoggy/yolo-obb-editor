@@ -43,7 +43,7 @@ jobs:
             git zip unzip openjdk-17-jdk \
             build-essential libffi-dev libssl-dev \
             zlib1g-dev libjpeg-dev libsqlite3-dev \
-            libncurses5-dev libtinfo5 liblzma-dev libbz2-dev \
+            libncurses-dev libtinfo6 liblzma-dev libbz2-dev \
             pkg-config libgl1-mesa-dev libgles2-mesa-dev
 
       - name: Install Buildozer
